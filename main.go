@@ -108,8 +108,18 @@ func main() {
 		port = strconv.Itoa(*common.Port)
 	}
 	logger.SysLogf("server started on http://localhost:%s", port)
-	err = server.Run(":" + port)
+
+	// Load TLS certificate and key from config
+	certFile := config.TLSCertFile
+	keyFile := config.TLSKeyFile
+
+	err = server.RunTLS(":"+port, certFile, keyFile)
 	if err != nil {
-		logger.FatalLog("failed to start HTTP server: " + err.Error())
+		logger.FatalLog("failed to start HTTPS server: " + err.Error())
 	}
+
+	//err = server.Run(":" + port)
+	//if err != nil {
+	//	logger.FatalLog("failed to start HTTP server: " + err.Error())
+	//}
 }

@@ -152,3 +152,6 @@ var OnlyOneLogFile = env.Bool("ONLY_ONE_LOG_FILE", false)
 var RelayProxy = env.String("RELAY_PROXY", "")
 var UserContentRequestProxy = env.String("USER_CONTENT_REQUEST_PROXY", "")
 var UserContentRequestTimeout = env.Int("USER_CONTENT_REQUEST_TIMEOUT", 30)
+
+var TLSCertFile = env.String("TLS_CERT_FILE", "tls/one_api_server_cert.pem")
+var TLSKeyFile = env.String("TLS_KEY_FILE", "tls/one_api_server_key.pem")
