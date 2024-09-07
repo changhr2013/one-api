@@ -47,9 +47,9 @@ func Relay(c *gin.Context) {
 	ctx := c.Request.Context()
 	path := c.Request.URL.Path
 	if !strings.HasPrefix(path, "/v1") && !strings.HasPrefix(path, "embeddings") {
-		path = strings.TrimPrefix(path, "/oapi")
+		c.Request.URL.Path = strings.TrimPrefix(path, "/oapi")
 	}
-	relayMode := relaymode.GetByPath(path)
+	relayMode := relaymode.GetByPath(c.Request.URL.Path)
 	if config.DebugEnabled {
 		requestBody, _ := common.GetRequestBody(c)
 		logger.Debugf(ctx, "request body: %s", string(requestBody))
