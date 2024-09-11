@@ -131,7 +131,7 @@ func main() {
 	
 	// 启动 HTTPS 服务
 	go func() {
-		err := router.RunTLS(":"+port, certFile, keyFile)
+		err := server.RunTLS(":"+port, certFile, keyFile)
 		if err != nil {
 			logger.FatalLog("failed to start HTTPS server: " + err.Error())
 		}
@@ -139,7 +139,7 @@ func main() {
 
 	// 启动 HTTP 服务
 	go func() {
-		err := router.Run(":" + innerPort)
+		err := server.Run(":" + innerPort)
 		if err != nil {
 			logger.FatalLog("failed to start HTTP server: " + err.Error())
 		}
