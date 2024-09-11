@@ -107,19 +107,44 @@ func main() {
 	if port == "" {
 		port = strconv.Itoa(*common.Port)
 	}
-	logger.SysLogf("server started on http://localhost:%s", port)
+	logger.SysLogf("server started on https://localhost:%s", port)
+	
+	var innerPort = os.Getenv("INNER_PORT")
+	if innerPort == "" {
+		innerPort = strconv.Itoa(*common.Port-1)
+	}
+	logger.SysLogf("inner server started on http://localhost:%s", innerPort)
 
 	// Load TLS certificate and key from config
 	certFile := config.TLSCertFile
 	keyFile := config.TLSKeyFile
 
-	err = server.RunTLS(":"+port, certFile, keyFile)
-	if err != nil {
-		logger.FatalLog("failed to start HTTPS server: " + err.Error())
-	}
+	// err = server.RunTLS(":"+port, certFile, keyFile)
+	// if err != nil {
+	// 	logger.FatalLog("failed to start HTTPS server: " + err.Error())
+	// }
 
 	//err = server.Run(":" + port)
 	//if err != nil {
 	//	logger.FatalLog("failed to start HTTP server: " + err.Error())
 	//}
+	
+	// 启动 HTTPS 服务
+	go func() {
+		err := router.RunTLS(":"+port, certFile, keyFile)
+		if err != nil {
+			logger.FatalLog("failed to start HTTPS server: " + err.Error())
+		}
+	}()
+
+	// 启动 HTTP 服务
+	go func() {
+		err := router.Run(":" + innerPort)
+		if err != nil {
+			logger.FatalLog("failed to start HTTP server: " + err.Error())
+		}
+	}()
+
+	// 防止主 goroutine 退出
+	select {}
 }
